@@ -2,13 +2,13 @@
 export const KIOSK_WEB_URL = 'https://boons-kiosk-96641bb3.base44.app';
 
 // Backend endpoints (replace with your real backend)
-export const CONNECTION_TOKEN_URL = 'http://10.0.2.2:8080/connection_token';
-export const CREATE_PAYMENT_INTENT_URL = 'http://10.0.2.2:8080/create_payment_intent';
+export const CONNECTION_TOKEN_URL = 'http://192.168.2.83:8080/connection_token';
+export const CREATE_PAYMENT_INTENT_URL = 'http://192.168.2.83:8080/create_payment_intent';
 
 // Stripe Terminal options
 export const STRIPE_TERMINAL_OPTIONS = {
   // If you want to simulate during development, set simulated: true
-  simulated: true,
+  simulated: false,
   // Default discovery method
   discoveryMethod: 'bluetoothScan',
 };

@@ -23,6 +23,7 @@ export default function App() {
         setStatus('initializing');
         setErrorMessage(null);
         console.log('BoonsKioskFlow: 2. [RN] App.tsx - Starting initialization');
+        console.log('[App] Status changed to: initializing');
 
         const net = await NetInfo.fetch();
         if (!net.isConnected) throw new Error('No network connection');
@@ -35,10 +36,12 @@ export default function App() {
         if (!connected) throw new Error('Reader not connected after discovery');
 
         setStatus('ready');
+        console.log('[App] Status changed to: ready');
       } catch (err: any) {
         console.error('[App] startup error', err);
         setErrorMessage(err?.message || String(err));
         setStatus('error');
+        console.log('[App] Status changed to: error', err);
       }
     };
 

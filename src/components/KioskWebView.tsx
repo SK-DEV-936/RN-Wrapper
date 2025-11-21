@@ -62,6 +62,14 @@ export default function KioskWebView() {
           errorMessage: result.errorMessage,
         };
         postResultToWeb(msg);
+
+        // Auto-return to home screen after 5 seconds
+        if (result.success) {
+          setTimeout(() => {
+            console.log('[KioskWebView] Auto-returning to home screen');
+            webviewRef.current?.injectJavaScript("window.location.href = '/'; true;");
+          }, 5000);
+        }
       } catch (err: any) {
         console.error('[KioskWebView] startPayment error', err);
         const msg: ToWebMessage = {
@@ -85,10 +93,45 @@ export default function KioskWebView() {
         originWhitelist={["*"]}
         source={{ uri: KIOSK_URL }}
         testID="kiosk-webview"
-        javaScriptEnabled
+        domStorageEnabled
+        javaScriptEnabled={true}
+        userAgent="Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+        applicationNameForUserAgent="BoonsKiosk"
         onMessage={handleWebMessage}
+        injectedJavaScript={`
+          (function() {
+            if (document.getElementById('rn-test-pay-btn')) return;
+            var btn = document.createElement('button');
+            btn.id = 'rn-test-pay-btn';
+            btn.innerHTML = 'Test Pay $10';
+            btn.style.position = 'fixed';
+            btn.style.bottom = '20px';
+            btn.style.right = '20px';
+            btn.style.zIndex = '9999';
+            btn.style.padding = '15px 20px';
+            btn.style.backgroundColor = '#007AFF';
+            btn.style.color = 'white';
+            btn.style.border = 'none';
+            btn.style.borderRadius = '8px';
+            btn.style.fontSize = '16px';
+            btn.style.fontWeight = 'bold';
+            btn.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+            btn.onclick = function() {
+              window.ReactNativeWebView.postMessage(JSON.stringify({
+                type: 'START_PAYMENT',
+                amount: 1000,
+                currency: 'usd'
+              }));
+            };
+            document.body.appendChild(btn);
+          })();
+          true;
+        `}
         startInLoadingState
-        userAgent="Mozilla/5.0 (Linux; Android 10; Android SDK built for x86) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36"
+        onError={(syntheticEvent) => {
+          const { nativeEvent } = syntheticEvent;
+          console.warn('WebView error: ', nativeEvent);
+        }}
       />
 
       {loadingPayment && (
