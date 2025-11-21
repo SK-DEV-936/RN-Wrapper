@@ -7,18 +7,35 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Simple connection_token endpoint (mock)
-app.post('/connection_token', (req, res) => {
-  // Return a dummy secret — in real backends this should call Stripe's SDK to create a connection token
-  res.json({ secret: 'mock_connection_token_secret' });
+// Initialize Stripe with your secret key
+const stripe = require('stripe')('USE_KEY_HERE_FROM_STRIPE'); // TODO: Replace with real key
+
+// Connection token endpoint
+app.post('/connection_token', async (req, res) => {
+  try {
+    const token = await stripe.terminal.connectionTokens.create();
+    res.json({ secret: token.secret });
+  } catch (error) {
+    console.error('Error creating connection token:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
-// Simple create_payment_intent endpoint (mock)
-app.post('/create_payment_intent', (req, res) => {
+// Create payment intent endpoint
+app.post('/create_payment_intent', async (req, res) => {
   const { amount, currency } = req.body || {};
-  // In production, create a PaymentIntent with Stripe server SDK and return client_secret
-  // Here we return a fake client secret for testing the RN flow
-  res.json({ clientSecret: `mock_pi_${amount || '0'}_${currency || 'usd'}_secret_xxx` });
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount || 1000,
+      currency: currency || 'usd',
+      payment_method_types: ['card_present'],
+      capture_method: 'manual',
+    });
+    res.json({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+    console.error('Error creating payment intent:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Serve a simple test page for E2E that auto-triggers a START_PAYMENT postMessage
