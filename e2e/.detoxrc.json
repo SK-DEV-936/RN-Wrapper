@@ -1,0 +1,16 @@
+{
+  "configurations": {
+    "android.emu.debug": {
+      "type": "android.emulator",
+      "device": {
+        "avdName": "Pixel_4a_API_31"
+      },
+      "app": {
+        "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+        "testBinaryPath": "android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+        "build": "cd .. && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug",
+        "cleanup": true
+      }
+    }
+  }
+}

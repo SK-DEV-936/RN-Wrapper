@@ -1,0 +1,22 @@
+{
+  "name": "BoonsKioskM2",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "android": "npx react-native run-android",
+    "start": "npx react-native start",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-native": "0.71.10",
+    "react-native-webview": "^12.1.0",
+    "@stripe/stripe-terminal-react-native": "file:vendor/@stripe/stripe-terminal-react-native",
+    "@react-native-community/netinfo": "^9.3.7"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.6",
+    "@types/react": "^18.0.28",
+    "@types/react-native": "^0.72.2"
+  }
+}
